@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import telebot
+from telebot.apihelper import ApiException
 
 from data.db_session import global_init, create_session
 from data.user import UserInfo
@@ -57,18 +58,20 @@ def callback_inline(call):
     if call.message:
         # Pagination implementation
         if call.data.find("page") != -1:
+
+            user.page = int(call.data.split()[-1])
+            session.add(user)
+            session.commit()
+
             try:
-                user.page = int(call.data.split()[-1])
-                session.add(user)
-                session.commit()
                 bot.edit_message_reply_markup(
                     chat_id=call.message.chat.id,
                     message_id=call.message.message_id,
                     reply_markup=get_categories_kb(session,
                                                    call.message.chat.id)
                 )
-            except Exception as e:
-                print(e)
+            except ApiException:
+                pass
 
         # Returning articles by category to the user
         else:
