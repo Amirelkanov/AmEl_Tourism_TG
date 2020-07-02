@@ -42,7 +42,7 @@ def location(message):
     session.add(user_info)
     session.commit()
 
-    bot.send_message(message.chat.id, "📍 Геопозиция получена! С чего начнем?",
+    bot.send_message(message.chat.id, "🌎 Геопозиция получена! С чего начнем?",
                      reply_markup=get_categories_kb(session,
                                                     message.chat.id))
 
