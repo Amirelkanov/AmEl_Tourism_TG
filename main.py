@@ -54,36 +54,30 @@ def callback_inline(call):
     user = session.query(UserInfo).filter_by(
         user_id=call.message.chat.id).first()
 
-    if user:
+    if call.message:
+        # Pagination implementation
+        if call.data.find("page") != -1:
+            try:
+                user.page = int(call.data.split()[-1])
+                session.add(user)
+                session.commit()
+                bot.edit_message_reply_markup(
+                    chat_id=call.message.chat.id,
+                    message_id=call.message.message_id,
+                    reply_markup=get_categories_kb(session,
+                                                   call.message.chat.id)
+                )
+            except Exception as e:
+                print(e)
 
-        if call.message:
-            # Pagination implementation
-            if call.data.find("page") != -1:
-                try:
-                    user.page = int(call.data.split()[-1])
-                    session.add(user)
-                    session.commit()
-                    bot.edit_message_reply_markup(
-                        chat_id=call.message.chat.id,
-                        message_id=call.message.message_id,
-                        reply_markup=get_categories_kb(session,
-                                                       call.message.chat.id)
-                    )
-                except Exception as e:
-                    print(e)
-
-            # Returning articles by category to the user
-            else:
-                kb, category = get_articles_kb(session, int(call.data),
-                                               call.message.chat.id)
-                bot.send_message(chat_id=call.message.chat.id,
-                                 text=f"Ближайшие {category.lower()}:",
-                                 reply_markup=kb)
-
-    else:
-        bot.send_message(chat_id=call.message.chat.id,
-                         text="Слыш геопозицию дай",
-                         reply_markup=location_kb())
+        # Returning articles by category to the user
+        else:
+            kb, category, articles = get_articles_kb(session, int(call.data),
+                                                     call.message.chat.id)
+            bot.send_message(chat_id=call.message.chat.id,
+                             text=f"Ближайшие {category.lower()}:" if articles
+                             else "Ничего не найдено 👀",
+                             reply_markup=kb)
 
 
 # Launching app

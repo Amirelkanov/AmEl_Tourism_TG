@@ -69,4 +69,4 @@ def get_articles_kb(session, category_id: int, user_id: int):
                                                 url=f"{article_url}/"
                                                     f"{article.id}"))
     return keyboard, session.query(Category).filter_by(
-        id=category_id).first().name_of_category
+        id=category_id).first().name_of_category, articles
