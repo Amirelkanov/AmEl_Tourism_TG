@@ -3,7 +3,7 @@
 
 """ Finding the distance between two points """
 
-from math import radians, cos
+from math import radians, cos, sqrt
 
 
 def lonlat_distance(first_coords: list, second_coords: list) -> float:
@@ -19,8 +19,8 @@ def lonlat_distance(first_coords: list, second_coords: list) -> float:
     radians_latitude = radians((first_lat + second_lat) / 2.)
     lat_lon_factor = cos(radians_latitude)
 
-    dx, dy = abs(first_lon - second_lon) * 111 * lat_lon_factor, abs(
-        first_lat - second_lat) * 111
-    distance = (dx * dx + dy * dy) ** 0.5
+    dx, dy = abs(first_lon - second_lon) * 111. * lat_lon_factor, abs(
+        first_lat - second_lat) * 111.
+    distance = sqrt(dx * dx + dy * dy)
 
     return distance
