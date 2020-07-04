@@ -6,7 +6,7 @@ from math import ceil
 from telebot import types
 
 from data.articles import Category, Article
-from data.user import UserInfo
+from data.user_info import TGUserInfo
 from extensions.const import max_num_of_categories_per_page, article_url
 from extensions.formatting_distance import lonlat_distance
 
@@ -22,7 +22,7 @@ def get_categories_kb(session, user_id: int):
 
     # Adding categories
     categories = session.query(Category).all()
-    page = session.query(UserInfo).filter_by(user_id=user_id).first().page
+    page = session.query(TGUserInfo).filter_by(id=user_id).first().page
     for category in (categories[
                      max_num_of_categories_per_page * (page - 1):
                      max_num_of_categories_per_page * page]):
@@ -55,8 +55,8 @@ def get_articles_kb(session, category_id: int, user_id: int):
     keyboard = types.InlineKeyboardMarkup()
 
     # Formatting the user coords
-    coords = list(map(float, session.query(UserInfo).filter_by(
-        user_id=user_id).first().coords.split(", ")))
+    coords = list(map(float, session.query(TGUserInfo).filter_by(
+        id=user_id).first().coords.split(", ")))
 
     # Sorting places by proximity to the user
     articles = sorted(session.query(Article).filter_by(

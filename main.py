@@ -5,7 +5,7 @@ import telebot
 from telebot.apihelper import ApiException
 
 from data.db_session import global_init, create_session
-from data.user import UserInfo
+from data.user_info import TGUserInfo
 from extensions.const import SQLALCHEMY_DATABASE_URI
 from extensions.token import TELEGRAM_BOT_TOKEN
 from keyboards.dynamic_keyboards import get_categories_kb, get_articles_kb
@@ -32,10 +32,10 @@ def location(message):
 
     session = create_session()
 
-    user = session.query(UserInfo).filter_by(user_id=message.chat.id).first()
+    user = session.query(TGUserInfo).filter_by(id=message.chat.id).first()
 
-    user_info = UserInfo() if not user else user
-    user_info.user_id = message.chat.id
+    user_info = TGUserInfo() if not user else user
+    user_info.id = message.chat.id
     user_info.coords = f"{message.location.latitude}, " \
                        f"{message.location.longitude}"
     user_info.page = 1
@@ -52,8 +52,8 @@ def callback_inline(call):
     """ Function handling inline callback """
 
     session = create_session()
-    user = session.query(UserInfo).filter_by(
-        user_id=call.message.chat.id).first()
+    user = session.query(TGUserInfo).filter_by(
+        id=call.message.chat.id).first()
 
     if call.message:
         # Pagination implementation
