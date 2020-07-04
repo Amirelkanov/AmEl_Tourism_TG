@@ -13,12 +13,3 @@ class TGUserInfo(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     coords = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     page = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=1)
-
-
-class VKUserInfo(SqlAlchemyBase):
-    """ VK User info model initialization class """
-
-    __tablename__ = 'vk_user_info'
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    coords = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    page = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=1)
