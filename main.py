@@ -85,5 +85,5 @@ def callback_inline(call):
 
 # Launching app
 if __name__ == "__main__":
-    global_init(SQLALCHEMY_DATABASE_URI)
+    global_init(SQLALCHEMY_DATABASE_URI)  # Init DB
     bot.infinity_polling(timeout=3)
