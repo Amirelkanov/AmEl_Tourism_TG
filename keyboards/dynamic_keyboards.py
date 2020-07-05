@@ -64,6 +64,7 @@ def get_articles_kb(session, category_id: int, user_id: int):
                       key=lambda x: lonlat_distance(coords, list(
                           map(float, x.coords.split(", ")))), reverse=True)[:5]
 
+    # Adding articles
     for article in articles:
         keyboard.add(types.InlineKeyboardButton(text=f"{article.title}",
                                                 url=f"{article_url}/"
