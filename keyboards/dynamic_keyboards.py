@@ -32,11 +32,11 @@ def get_categories_kb(session, user_id: int):
     # Adding nav arrows
     arrows = []
     if page > 1:
-        arrows.append(types.InlineKeyboardButton(text="⬅",
+        arrows.append(types.InlineKeyboardButton(text="«",
                                                  callback_data=f"page "
                                                                f"{page - 1}"))
     if ceil(len(categories) / max_num_of_categories_per_page) > page:
-        arrows.append(types.InlineKeyboardButton(text="➡",
+        arrows.append(types.InlineKeyboardButton(text="»",
                                                  callback_data=f"page "
                                                                f"{page + 1}"))
     keyboard.row(*arrows)
