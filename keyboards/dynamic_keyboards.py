@@ -21,7 +21,8 @@ def get_categories_kb(session, user_id: int):
     keyboard = types.InlineKeyboardMarkup()
 
     # Adding categories
-    categories = session.query(Category).all()
+    categories = sorted(session.query(Category).all(),
+                        key=lambda x: x.name_of_category)
     page = session.query(TGUserInfo).filter_by(id=user_id).first().page
     for category in (categories[
                      max_num_of_categories_per_page * (page - 1):
