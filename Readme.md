@@ -1,5 +1,5 @@
 # 🤖 Tourism bot for Telegram
-You can use the bot here: https://teleg.one/AmEl_tourism_bot
+You can use the bot here: https://t.me/AmEl_tourism_bot
 
 # About AmEl
 *AmEl* is a tourist bot that helps them better navigate the city, offering nearby places and detailed information on them.
