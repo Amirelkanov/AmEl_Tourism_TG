@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import telebot
-from telebot.apihelper import ApiException
 
+from data import Category
 from data.db_session import global_init, create_session
 from data.user_info import TGUserInfo
 from extensions.const import SQLALCHEMY_DATABASE_URI
@@ -47,40 +47,41 @@ def location(message):
                                                     message.chat.id))
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    """ Function handling inline callback """
+@bot.message_handler(content_types=["text"])
+def categories_handler(message):
+    """ Function that processes a query related to categories """
+
+    message_text, user_id = message.text, message.chat.id
 
     session = create_session()
-    user = session.query(TGUserInfo).filter_by(
-        id=call.message.chat.id).first()
+    user = session.query(TGUserInfo).filter_by(id=user_id).first()
 
-    if call.message:
-        # Pagination implementation
-        if call.data.find("page") != -1:
+    if message_text in ["«", "»"]:
 
-            user.page = int(call.data.split()[-1])
-            session.add(user)
-            session.commit()
+        user.page = user.page - 1 if message_text == "«" else user.page + 1
+        session.add(user)
+        session.commit()
 
-            try:
-                bot.edit_message_reply_markup(
-                    chat_id=call.message.chat.id,
-                    message_id=call.message.message_id,
-                    reply_markup=get_categories_kb(session,
-                                                   call.message.chat.id)
-                )
-            except ApiException:
-                pass
+        bot.send_message(
+            chat_id=user_id,
+            text=f"Перелистываем...",
+            reply_markup=get_categories_kb(session, user_id),
+        )
 
-        # Returning articles by category to the user
-        else:
-            kb, category, articles = get_articles_kb(session, int(call.data),
-                                                     call.message.chat.id)
-            bot.send_message(chat_id=call.message.chat.id,
-                             text=f"Ближайшие {category.lower()}:" if articles
-                             else "Ничего не найдено 👀",
-                             reply_markup=kb)
+    elif message_text in list(map(lambda x: x.name_of_category,
+                                  session.query(Category).all())):
+
+        kb, articles = get_articles_kb(
+            session, session.query(Category).filter_by(
+                name_of_category=message_text).first().id,
+            user_id)
+
+        bot.send_message(
+            chat_id=user_id,
+            text=f"Ближайшие {message_text.lower()}:"
+            if articles else "Ничего не найдено 👀",
+            reply_markup=kb,
+        )
 
 
 # Launching app

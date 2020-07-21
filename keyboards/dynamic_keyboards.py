@@ -18,7 +18,7 @@ def get_categories_kb(session, user_id: int):
     :return: inline category keyboard
     """
 
-    keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     # Adding categories
     categories = sorted(session.query(Category).all(),
@@ -27,20 +27,17 @@ def get_categories_kb(session, user_id: int):
     for category in (categories[
                      max_num_of_categories_per_page * (page - 1):
                      max_num_of_categories_per_page * page]):
-        keyboard.add(types.InlineKeyboardButton(text=category.name_of_category,
-                                                callback_data=f"{category.id}"))
+        keyboard.add(types.InlineKeyboardButton(text=category.name_of_category))
 
     # Adding nav arrows
     arrows = []
     if page > 1:
-        arrows.append(types.InlineKeyboardButton(text="«",
-                                                 callback_data=f"page "
-                                                               f"{page - 1}"))
-    if ceil(len(categories) / max_num_of_categories_per_page) > page:
-        arrows.append(types.InlineKeyboardButton(text="»",
-                                                 callback_data=f"page "
-                                                               f"{page + 1}"))
+        arrows.append(types.InlineKeyboardButton(text="«"))
+    elif ceil(len(categories) / max_num_of_categories_per_page) > page:
+        arrows.append(types.InlineKeyboardButton(text="»"))
+
     keyboard.row(*arrows)
+    keyboard.add(types.KeyboardButton(text="🌎 Место", request_location=True))
 
     return keyboard
 
@@ -70,5 +67,4 @@ def get_articles_kb(session, category_id: int, user_id: int):
         keyboard.add(types.InlineKeyboardButton(text=f"{article.title}",
                                                 url=f"{article_url}/"
                                                     f"{article.id}"))
-    return keyboard, session.query(Category).filter_by(
-        id=category_id).first().name_of_category, articles
+    return keyboard, articles
