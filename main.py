@@ -19,10 +19,11 @@ bot = telebot.TeleBot(token=TELEGRAM_BOT_TOKEN)
 def greeting(message):
     """ Greeting function """
 
-    bot.send_message(message.chat.id, "Привет! Я телеграм - бот, призванный "
-                                      "помогать туристам!\n\n"
-                                      "_Для начала нужно дать доступ к "
-                                      "местоположению._",
+    bot.send_message(chat_id=message.chat.id,
+                     text="Привет! Я телеграм - бот, призванный "
+                          "помогать туристам!\n\n"
+                          "_Для начала нужно дать доступ к "
+                          "местоположению._",
                      parse_mode="markdown", reply_markup=location_kb())
 
 
@@ -42,7 +43,8 @@ def location(message):
     session.add(user_info)
     session.commit()
 
-    bot.send_message(message.chat.id, "🌎 Геопозиция получена! С чего начнем?",
+    bot.send_message(chat_id=message.chat.id,
+                     text="🌎 Геопозиция получена! С чего начнем?",
                      reply_markup=get_categories_kb(session,
                                                     message.chat.id))
 
