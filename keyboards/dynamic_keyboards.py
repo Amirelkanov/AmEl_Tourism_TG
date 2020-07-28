@@ -33,7 +33,7 @@ def get_categories_kb(session, user_id: int):
     arrows = []
     if page > 1:
         arrows.append(types.InlineKeyboardButton(text="«"))
-    elif ceil(len(categories) / max_num_of_categories_per_page) > page:
+    if ceil(len(categories) / max_num_of_categories_per_page) > page:
         arrows.append(types.InlineKeyboardButton(text="»"))
 
     keyboard.row(*arrows)
